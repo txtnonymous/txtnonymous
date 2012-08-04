@@ -46,8 +46,8 @@ def update_timestamps(arr):
 
 def on_message_recieved(from_gid, message):
     print "Message from ", from_gid, " message: ", message
-    frm = db.find_or_create(gid=from_gid)
     try:
+        frm = db.find_or_create(gid=from_gid)
         to = get_destination(message, frm)
     except IndexError:
         print 'got IndexError'
