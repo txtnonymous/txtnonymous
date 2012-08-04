@@ -47,6 +47,9 @@ def create_user(gid=None, tag=None):
         db.users.update({"_id": oid}, {"$set": {"tag": tag}})
     return db.users.find_one(oid)
 
+def delete_user(user):
+    db.users.remove(user)
+
 def find_or_create(gid=None, tag=None):
     u = find_user(gid, tag)
     return u or create_user(gid)
