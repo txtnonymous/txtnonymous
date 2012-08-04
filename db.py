@@ -1,9 +1,10 @@
 """Database module"""
 
+import os
 from exceptions import RuntimeError
 from datetime import datetime, timedelta
 from pymongo import Connection
-connection = Connection()
+connection = Connection(os.environ.get('MONGOHQ_URL'))
 
 # Get your DB
 db = connection['txtnonymous-dev']
