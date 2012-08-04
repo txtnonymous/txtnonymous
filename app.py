@@ -16,19 +16,25 @@ def send_message(destination, message):
     tw.send_sms(destination, message)
 
 def get_destination(message):
-    # TODO
+    # search for hashtag
+    #/[a-zA-Z0-9]/
+    # if not found, return None
+    # if found, return existing user.
+    pass
 
-def get_forwarded_message(details, from, to):
-    # TODO
+def get_forwarded_message(details, frm, to):
+    # replace to tag with frm tag.
+    # return modified string.
+    pass
 
 def update_timestamps(arr):
     for u in arr:
         db.extend_timestamp(u)
 
 def onMessageRecieved(from_gid, message):
-    frm = db.findOrCreate(from_gid)
+    frm = db.find_or_create(from_gid)
     to = get_destination(message)
-    if to == null:
+    if to == None:
         send_message(frm.gid, 'no destination: use a hastag like #secondfriend')
         return
     send_message(to.gid, get_forwarded_message(details, frm.tag, to.tag))
