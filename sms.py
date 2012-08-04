@@ -4,9 +4,11 @@ try:
     import credentials
     sid = os.environ.get('TWILIO_SID', credentials.sid)
     auth = os.environ.get('TWILIO_AUTH', credentials.auth)
+    phone_number = os.environ.get('PHONE_NUMBER', credentials.phone_number)
 except:
     sid = os.environ.get('TWILIO_SID')
     auth = os.environ.get('TWILIO_AUTH')
+    phone_number = os.environ.get('PHONE_NUMBER')
     print "No credentials module, use environment variables"
 
 class Twilio:
@@ -15,7 +17,7 @@ class Twilio:
         self.client = TwilioRestClient(sid, auth)
 
     def send_sms(self, number, message):
-        message = self.client.sms.messages.create(to = number, from_ = credentials.phone_number,
+        message = self.client.sms.messages.create(to = number, from_ = phone_number,
                                        body = message)
 
     def receive_sms():
