@@ -1,21 +1,27 @@
 import os, re
 from flask import Flask
+from flask import request
 
-import sms, db
+import sms
 
 app = Flask(__name__)
+tw = sms.Twilio()
+
+def receive_sms(sender, message):
+    print "Message from ", sender, " message: ", message
+tw.init(receive_sms)
 
 @app.route('/')
 def hello():
     return 'Hello World!'
 
-@app.route('/receive_sms/', methods=['POST', 'GET'])
+@app.route('/receive_sms', methods=['POST'])
 def receive_sms():
-    import IPython 
+    message = request.form['Body']
+    sender = request.form['From']
+    import IPython
     IPython.embed()
-
-
-tw = sms.Twilio()
+    tw.receive_sms(sender, message)
 
 def send_message(destination, message):
     tw.send_sms(destination, message)
