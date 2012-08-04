@@ -1,13 +1,26 @@
 """Database module"""
 
 import os
+from urlparse import urlsplit
 from exceptions import RuntimeError
 from datetime import datetime, timedelta
 from pymongo import Connection
-connection = Connection(os.environ.get('MONGOHQ_URL'))
+url = os.environ.get('MONGOHQ_URL')
+connection = Connection(url)
+if url:
+    parsed = urlsplit(url)
+    db_name = parsed.path[1:]
+    user_pass = parsed.netloc.split('@')[0].split(':')
+else:
+    db_name = 'txtnonymous-dev'
+    user_pass = None
 
 # Get your DB
-db = connection['txtnonymous-dev']
+db = connection[db_name]
+
+# Authenticate
+if user_pass:
+    db.authenticate(user_pass[0], user_pass[1])
 
 class NotFoundException(RuntimeError):
     """Database record not found"""
