@@ -52,7 +52,7 @@ def on_message_recieved(from_gid, message):
         return
     except CustomCommandExecuted:
         return
-    send_message(to['gid'], get_forwarded_message(details, frm['tag'], to['tag']))
+    send_message(to['gid'], get_forwarded_message(message, frm['tag'], to['tag']))
     update_timestamps([frm['tag'], to['tag']])
 
 tw.init(on_message_recieved)
