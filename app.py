@@ -44,8 +44,11 @@ def on_message_recieved(from_gid, message):
     frm = db.find_or_create(from_gid)
     try:
         to = get_destination(message, frm)
-    except IndexError, Exception:
+    except IndexError:
         send_message(frm['gid'], 'no destination: use a hastag like #secondfriend')
+        return
+    except NotFoundException:
+        send_message(frm['gid'], 'that hashtag is not recognised: check your spelling, but it may have expired.')
         return
     except CustomCommandExecuted:
         return
