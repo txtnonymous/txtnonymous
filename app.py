@@ -58,8 +58,18 @@ tw.init(on_message_recieved)
 def hello():
     return 'Hello World!'
 
-@app.route('/receive_sms', methods=['POST'])
-def receive_sms():
+@app.route('/send_msg')
+def send_msg():
+    from_gid = request.form['From']  
+    to_gid = request.form['To']
+    message = request.form['Body']
+    token = request.form['Token']
+    if token != credentials.token:
+        print "Incorrect token"
+    on_message_received(from_gid, message + " " + to_gid)
+
+@app.route('/receive_msg', methods=['POST'])
+def receive_msg():
     message = request.form['Body']
     sender = request.form['From']
     tw.receive_sms(sender, message)
