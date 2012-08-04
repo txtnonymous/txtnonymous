@@ -48,6 +48,7 @@ def on_message_recieved(from_gid, message):
     print "Message from ", from_gid, " message: ", message
     try:
         frm = db.find_or_create(gid=from_gid)
+        print frm
         to = get_destination(message, frm)
     except IndexError:
         print 'got IndexError'
