@@ -54,7 +54,7 @@ def on_message_recieved(from_gid, message):
         print 'got IndexError'
         send_message(frm['gid'], 'no destination: use a hastag like #secondfriend')
         return
-    except NotFoundException:
+    except db.NotFoundException:
         print 'got NotFoundException'
         send_message(frm['gid'], 'that hashtag is not recognised: check your spelling, but it may have expired.')
         return
