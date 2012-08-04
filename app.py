@@ -9,6 +9,11 @@ app = Flask(__name__)
 def hello():
     return 'Hello World!'
 
+@app.route('/receive_sms/', methods=['POST', 'GET'])
+def receive_sms():
+    import IPython 
+    IPython.embed()
+
 
 tw = sms.Twilio()
 
