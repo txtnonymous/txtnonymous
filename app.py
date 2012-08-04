@@ -1,4 +1,4 @@
-import os
+import os, re
 from flask import Flask
 
 import sms, db
@@ -16,32 +16,27 @@ def send_message(destination, message):
     tw.send_sms(destination, message)
 
 def get_destination(message):
-    # search for hashtag
-    #/[a-zA-Z0-9]/
-    # if not found, return None
-    # if found, return existing user.
-    pass
+    return db.find(re.findall('\s#([a-zA-Z][a-zA-Z0-9]+)', message)[-1])
 
 def get_forwarded_message(details, frm, to):
-    # replace to tag with frm tag.
-    # return modified string.
-    pass
+    return details.replace(to, frm)
 
 def update_timestamps(arr):
     for u in arr:
         db.extend_timestamp(u)
 
-def onMessageRecieved(from_gid, message):
+def on_message_recieved(from_gid, message):
     frm = db.find_or_create(from_gid)
-    to = get_destination(message)
-    if to == None:
+    try:
+        to = get_destination(message)
+    except IndexError, Exception:
         send_message(frm.gid, 'no destination: use a hastag like #secondfriend')
         return
     send_message(to.gid, get_forwarded_message(details, frm.tag, to.tag))
     update_timestamps([frm.tag, to.tag])
 
 
-tw.init(onMessageRecieved)
+tw.init(on_message_recieved)
 
 if __name__ == '__main__':
     # Bind to PORT if defined, otherwise default to 5000.
