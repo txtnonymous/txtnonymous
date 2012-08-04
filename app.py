@@ -60,6 +60,8 @@ def on_message_recieved(from_gid, message):
     except CustomCommandExecuted:
         print 'got CustomCommandExecuted'
         return
+    except Exception as e:
+        print e
     send_message(to['gid'], get_forwarded_message(message, frm['tag'], to['tag']))
     update_timestamps([frm['tag'], to['tag']])
 
