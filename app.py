@@ -31,6 +31,7 @@ special_commands = {
 def get_destination(message, frm):
     hashtag = re.findall('\s#([a-zA-Z0-9]+)', message)[-1]
     if hashtag in special_commands.keys():
+        print "special_command found: %s" % hashtag
         special_commands[hashtag](frm)
         raise CustomCommandExecuted()
     return db.find(tag=hashtag)
