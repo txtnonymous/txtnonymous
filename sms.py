@@ -1,6 +1,9 @@
 import os
 from twilio.rest import TwilioRestClient
-import credentials
+try:
+    import credentials
+except:
+    print "No credentials module, use environment variables"
 
 class Twilio:
     def __init__(self):
