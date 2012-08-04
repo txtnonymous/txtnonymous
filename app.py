@@ -15,9 +15,11 @@ def send_message(destination, message):
     tw.send_sms(destination, message)
 
 def whats_my_id(frm):
+    print "whats_my_id called"
     send_message(frm['gid'], 'your txtnonymous id is: #' + frm['tag'])
 
 def delete_my_id(frm):
+    print "delete_my_id called"
     db.delete(frm)
     send_message(frm['gid'], 'your txtnonymous id (#' + frm['tag'] + ') has been deleted.')
 
