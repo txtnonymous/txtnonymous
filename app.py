@@ -50,12 +50,15 @@ def on_message_recieved(from_gid, message):
     try:
         to = get_destination(message, frm)
     except IndexError:
+        print 'got IndexError'
         send_message(frm['gid'], 'no destination: use a hastag like #secondfriend')
         return
     except NotFoundException:
+        print 'got NotFoundException'
         send_message(frm['gid'], 'that hashtag is not recognised: check your spelling, but it may have expired.')
         return
     except CustomCommandExecuted:
+        print 'got CustomCommandExecuted'
         return
     send_message(to['gid'], get_forwarded_message(message, frm['tag'], to['tag']))
     update_timestamps([frm['tag'], to['tag']])
