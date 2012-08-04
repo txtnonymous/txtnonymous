@@ -30,7 +30,7 @@ def get_destination(message, frm):
     if hashtag in special_commands.keys():
         special_commands[hashtag](frm)
         raise CustomCommandExecuted()
-    return db.find(hashtag)
+    return db.find(tag=hashtag)
 
 def get_forwarded_message(details, frm, to):
     return details.replace(to, frm)
@@ -41,7 +41,7 @@ def update_timestamps(arr):
 
 def on_message_recieved(from_gid, message):
     print "Message from ", from_gid, " message: ", message
-    frm = db.find_or_create(from_gid)
+    frm = db.find_or_create(gid=from_gid)
     try:
         to = get_destination(message, frm)
     except IndexError:

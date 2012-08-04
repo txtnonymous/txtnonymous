@@ -11,25 +11,36 @@ db = connection['txtnonymous-dev']
 class NotFoundException(RuntimeError):
     """Database record not found"""
 
-def create_user(gid):
+def find_user(gid=None, tag=None):
+    if gid and tag:
+        return db.users.find_one({"$or": [{"gid": gid}, {"tag": tag}]})
+    elif gid:
+        return db.users.find_one({"gid": gid})
+    elif tag:
+        return db.users.find_one({"tag": tag})
+    else:
+        return db.users.find_one()
+
+def create_user(gid=None, tag=None):
     oid = db.users.insert({
         'gid': gid,
-        'tag': None,
+        'tag': tag,
         'expires': datetime.now()+timedelta(days=1)})
     print oid
-    # FIXME: use the first 7 characters from the uid as the tag
-    tag = str(oid)[:8]
-    db.test.update({"_id": oid}, {"$set": {"tag": tag}})
+    if not tag:
+        # FIXME: use the first 7 characters from the uid as the tag
+        tag = str(oid)[:8]
+        db.test.update({"_id": oid}, {"$set": {"tag": tag}})
     return db.users.find_one(oid)
 
-def find_or_create(gid):
-    u = db.users.find_one({"gid": gid})
+def find_or_create(gid=None, tag=None):
+    u = find_user(gid, tag)
     return u or create_user(gid)
 
-def find(gid):
-    u = db.users.find_one({"gid": gid})
+def find(gid=None, tag=None):
+    u = find_user(gid, tag)
     if not u:
-        raise
+        raise NotFoundException()
     return u
 
 def extend_timestamp(user):
