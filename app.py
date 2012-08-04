@@ -1,7 +1,8 @@
-import os, re, db
+import re
+from os import environ
 from flask import Flask
 from flask import request
-import sms
+import db, sms
 
 class CustomCommandExecuted(Exception):
     pass
@@ -78,7 +79,7 @@ def send_msg():
     to_gid = request.form['To']
     message = request.form['Body']
     token = request.form['Token']
-    if token != credentials.token:
+    if token != environ['TOKEN']:
         print "Incorrect token"
     on_message_received(from_gid, message + " " + to_gid)
 
@@ -91,6 +92,6 @@ def receive_msg():
 
 if __name__ == '__main__':
     # Bind to PORT if defined, otherwise default to 5000.
-    port = int(os.environ.get('PORT', 5000))
-    app.run(host='0.0.0.0', port=port)
+    port = int(environ.get('PORT', 5000))
+    app.run(host=environ.get('HOSTNAME', '0.0.0.0'), port=port)
 

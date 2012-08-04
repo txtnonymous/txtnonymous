@@ -1,15 +1,8 @@
-import os
+from os import environ
 from twilio.rest import TwilioRestClient
-try:
-    import credentials
-    sid = os.environ.get('TWILIO_SID', credentials.sid)
-    auth = os.environ.get('TWILIO_AUTH', credentials.auth)
-    phone_number = os.environ.get('PHONE_NUMBER', credentials.phone_number)
-except:
-    sid = os.environ.get('TWILIO_SID')
-    auth = os.environ.get('TWILIO_AUTH')
-    phone_number = os.environ.get('PHONE_NUMBER')
-    print "No credentials module, use environment variables"
+sid = environ['TWILIO_SID']
+auth = environ['TWILIO_AUTH']
+phone_number = environ['PHONE_NUMBER']
 
 class Twilio:
     def __init__(self):
@@ -29,5 +22,5 @@ class Twilio:
 
 if __name__ == "__main__":        
       twilio = Twilio()
-      twilio.send_sms(credentials.joe_phone_number, "Hallo Joe")
+      twilio.send_sms(environ['MY_PHONE_NUMBER'], "Hallo Joe")
 
