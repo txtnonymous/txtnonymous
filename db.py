@@ -30,7 +30,7 @@ def create_user(gid=None, tag=None):
     if not tag:
         # FIXME: use the first 7 characters from the uid as the tag
         tag = str(oid)[:8]
-        db.test.update({"_id": oid}, {"$set": {"tag": tag}})
+        db.users.update({"_id": oid}, {"$set": {"tag": tag}})
     return db.users.find_one(oid)
 
 def find_or_create(gid=None, tag=None):
