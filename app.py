@@ -11,6 +11,7 @@ app = Flask(__name__)
 tw = sms.Twilio()
 
 def send_message(destination, message):
+    print "Sent message '%s' to %s" % (message, destination)
     tw.send_sms(destination, message)
 
 def whats_my_id(frm):
