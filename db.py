@@ -5,21 +5,18 @@ from urlparse import urlsplit
 from exceptions import RuntimeError
 from datetime import datetime, timedelta
 from pymongo import Connection
-url = os.environ.get('MONGOHQ_URL')
+
+url = os.getenv('MONGOHQ_URL', 'mongodb://localhost:27017/txtnonymous-dev')
 connection = Connection(url)
-if url:
-    parsed = urlsplit(url)
-    db_name = parsed.path[1:]
-    user_pass = parsed.netloc.split('@')[0].split(':')
-else:
-    db_name = 'txtnonymous-dev'
-    user_pass = None
+parsed = urlsplit(url)
+db_name = parsed.path[1:]
 
 # Get your DB
 db = connection[db_name]
 
 # Authenticate
-if user_pass:
+if '@' in url:
+    user_pass = parsed.netloc.split('@')[0].split(':')
     db.authenticate(user_pass[0], user_pass[1])
 
 class NotFoundException(RuntimeError):
