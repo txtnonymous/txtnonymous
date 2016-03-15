@@ -4,15 +4,15 @@ import os
 from urlparse import urlsplit
 from exceptions import RuntimeError
 from datetime import datetime, timedelta
-from pymongo import Connection
+from pymongo import MongoClient
 
 url = os.getenv('MONGOHQ_URL', 'mongodb://localhost:27017/txtnonymous-dev')
-connection = Connection(url)
+client = MongoClient(url)
 parsed = urlsplit(url)
 db_name = parsed.path[1:]
 
 # Get your DB
-db = connection[db_name]
+db = client[db_name]
 
 # Authenticate
 if '@' in url:
