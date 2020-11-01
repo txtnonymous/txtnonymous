@@ -1,8 +1,7 @@
 """Database module"""
 
 import os
-from urlparse import urlsplit
-from exceptions import RuntimeError
+from urllib.parse import urlsplit
 from datetime import datetime, timedelta
 from pymongo import MongoClient
 
@@ -37,7 +36,6 @@ def create_user(gid=None, tag=None):
         'gid': gid,
         'tag': tag,
         'expires': datetime.now()+timedelta(days=1)})
-    print oid
     if not tag:
         # FIXME: use the first 7 characters from the uid as the tag
         tag = str(oid)[:8]
