@@ -12,15 +12,15 @@ app = Flask(__name__)
 tw = sms.Twilio()
 
 def send_message(destination, message):
-    print "Sent message '%s' to %s" % (message, destination)
+    app.logger.info("Sent message '%s' to %s", message, destination)
     tw.send_sms(destination, message)
 
 def whats_my_id(frm):
-    print "whats_my_id called for %s" % frm
+    app.logger.info("whats_my_id called for %s", frm)
     send_message(frm['gid'], 'your txtnonymous id is: #' + frm['tag'])
 
 def delete_my_id(frm):
-    print "delete_my_id called, removing %s" % frm
+    app.logger.info("delete_my_id called, removing %s", frm)
     db.delete(frm)
     send_message(frm['gid'], 'your txtnonymous id (#' + frm['tag'] + ') has been deleted.')
 
@@ -31,9 +31,9 @@ special_commands = {
 
 def get_destination(message, frm):
     hashtag = re.findall('#([a-zA-Z0-9]+)', message)[-1]
-    print "Hastag: %s" % hashtag
+    app.logger.info("Hastag: %s", hashtag)
     if hashtag in special_commands.keys():
-        print "special_command found: %s" % hashtag
+        app.logger.info("special_command found: %s", hashtag)
         special_commands[hashtag](frm)
         raise CustomCommandExecuted()
     return db.find(tag=hashtag)
@@ -46,24 +46,22 @@ def update_timestamps(arr):
         db.extend_timestamp(u)
 
 def on_message_recieved(from_gid, message):
-    print "Message from ", from_gid, " message: ", message
+    app.logger.info("Message from %s: %s", from_gid, message)
     try:
         frm = db.find_or_create(gid=from_gid)
-        print frm
         to = get_destination(message, frm)
     except IndexError:
-        print 'got IndexError'
+        app.logger.warn('No destination: use a hastag like #secondfriend')
         send_message(frm['gid'], 'no destination: use a hastag like #secondfriend')
         return
     except db.NotFoundException:
-        print 'got NotFoundException'
+        app.logger.warn('That hashtag is not recognised: check your spelling, but it may have expired.')
         send_message(frm['gid'], 'that hashtag is not recognised: check your spelling, but it may have expired.')
         return
-    except CustomCommandExecuted:
-        print 'got CustomCommandExecuted'
+    except CustomCommandExecuted as e:
         return
     except Exception as e:
-        print e
+        app.logger.warn('Caught exception: %s', e)
     send_message(to['gid'], get_forwarded_message(message, frm['tag'], to['tag']))
     update_timestamps([frm['tag'], to['tag']])
 
@@ -80,7 +78,7 @@ def send_msg():
     message = request.form['Body']
     token = request.form['Token']
     if token != environ['TOKEN']:
-        print "Incorrect token"
+        app.logger.warn('Incorrect token: %s', token)
     on_message_received(from_gid, message + " " + to_gid)
 
 @app.route('/receive_msg', methods=['POST'])
