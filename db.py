@@ -5,18 +5,8 @@ from urllib.parse import urlsplit
 from datetime import datetime, timedelta
 from pymongo import MongoClient
 
-url = os.getenv('MONGOHQ_URL', 'mongodb://localhost:27017/txtnonymous-dev')
-client = MongoClient(url)
-parsed = urlsplit(url)
-db_name = parsed.path[1:]
-
-# Get your DB
-db = client[db_name]
-
-# Authenticate
-if '@' in url:
-    user_pass = parsed.netloc.split('@')[0].split(':')
-    db.authenticate(user_pass[0], user_pass[1])
+url = os.getenv('MONGODB_URI', 'mongodb://localhost:27017/txtnonymous-dev')
+db = MongoClient(url)[urlsplit(url).path[1:]]
 
 class NotFoundException(RuntimeError):
     """Database record not found"""
