@@ -45,7 +45,7 @@ def update_timestamps(arr):
     for u in arr:
         db.extend_timestamp(u)
 
-def on_message_recieved(from_gid, message):
+def on_message_received(from_gid, message):
     app.logger.info("Message from %s: %s", from_gid, message)
     try:
         frm = db.find_or_create(gid=from_gid)
@@ -65,7 +65,7 @@ def on_message_recieved(from_gid, message):
     send_message(to['gid'], get_forwarded_message(message, frm['tag'], to['tag']))
     update_timestamps([frm['tag'], to['tag']])
 
-tw.init(on_message_recieved)
+tw.init(on_message_received)
 
 @app.route('/')
 def hello():
