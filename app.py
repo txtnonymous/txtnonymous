@@ -71,7 +71,7 @@ tw.init(on_message_received)
 def hello():
     return 'Hello World!'
 
-@app.route('/send_msg')
+@app.route('/send_msg', methods=['POST'])
 def send_msg():
     from_gid = request.form['From']  
     to_gid = request.form['To']
