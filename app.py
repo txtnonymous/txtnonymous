@@ -73,19 +73,16 @@ def hello():
 
 @app.route('/send_msg', methods=['POST'])
 def send_msg():
-    from_gid = request.form['From']  
-    to_gid = request.form['To']
-    message = request.form['Body']
-    token = request.form['Token']
-    if token != environ['TOKEN']:
-        app.logger.warn('Incorrect token: %s', token)
-    on_message_received(from_gid, message + " " + to_gid)
+    data = request.json
+    # Simple protection against unauthorized requests
+    if data.get('token') != environ['REQUEST_TOKEN']:
+        app.logger.warn('Incorrect token: %s', data['token'])
+    on_message_received(data['from'], ' '.join((data['message'], data['to'])))
 
 @app.route('/receive_msg', methods=['POST'])
 def receive_msg():
-    message = request.form['Body']
-    sender = request.form['From']
-    tw.receive_sms(sender, message)
+    data = request.json
+    tw.receive_sms(data['from'], data['message'])
 
 
 if __name__ == '__main__':
